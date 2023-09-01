@@ -1,10 +1,11 @@
+using Photon.Pun;
 using TMPro;
 using UnityEngine;
 
 namespace PorfirioPartida.Workshop
 {
     [RequireComponent(typeof(Rigidbody))]
-    public class PlayerController : MonoBehaviour
+    public class PlayerController : MonoBehaviour, IPunInstantiateMagicCallback
     {
         public Transform groundCheck;
         public LayerMask groundLayer;
@@ -22,7 +23,7 @@ namespace PorfirioPartida.Workshop
         {
             _rigidbody = GetComponent<Rigidbody>();
 
-            SetPlayerName(PlayerPrefs.GetString(Constants.PlayerName));
+            //SetPlayerName(PlayerPrefs.GetString(Constants.PlayerName));
         }
 
         public void SetColor(Material material)
@@ -34,13 +35,20 @@ namespace PorfirioPartida.Workshop
             carModel.GetComponent<MeshRenderer>().materials = materials;
         }
 
-        private void SetPlayerName(string playerName)
+        public void SetPlayerName(string playerName)
         {
             uiPlayerName.text = playerName;
         }
 
+        public PhotonView PhotonView;
         private void Update()
         {
+            if (!PhotonView.IsMine)
+            {
+                return;
+            }
+
+
             RaycastHit hit;
             if(!Physics.Raycast(groundCheck.position, Vector3.down, out hit, 3f, groundLayer)){
                 //is grounded.
@@ -91,6 +99,17 @@ namespace PorfirioPartida.Workshop
         public void Resume()
         {
             _rigidbody.useGravity = true;
+        }
+        public void OnPhotonInstantiate(PhotonMessageInfo info)
+        {
+            var instantiationData = info.photonView.InstantiationData;
+            var player = info.photonView.GetComponent<PlayerController>();
+            var playerName = (string)instantiationData[0];
+            var selectedColorIndex = (int)instantiationData[1];
+            var playerController = player.GetComponent<PlayerController>(); 
+            playerController.SetColor(SceneManager.Instance.materials[selectedColorIndex]);
+            playerController.SetPlayerName(playerName);
+            Debug.Log(instantiationData);
         }
     }
 }

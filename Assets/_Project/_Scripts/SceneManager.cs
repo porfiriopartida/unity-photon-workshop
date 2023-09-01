@@ -1,10 +1,11 @@
 ﻿using System.Collections;
+using Photon.Pun;
 using Photon.Pun.Demo.SlotRacer;
 using UnityEngine;
 
 namespace PorfirioPartida.Workshop
 {
-    public class SceneManager : Singleton<SceneManager>
+    public class SceneManager : Singleton<SceneManager> 
     {
 
         public float resumeDelay;
@@ -19,15 +20,16 @@ namespace PorfirioPartida.Workshop
 
         public void StartGame()
         {
-            var randomPosition = GetRandomPosition();
-            var player = GameObject.Instantiate(carPrefab, randomPosition, Quaternion.identity, playersHolder);
+            var selectedColorIndex = PlayerPrefs.GetInt(Constants.SelectedColor, 0);
+            var playerName = PlayerPrefs.GetString(Constants.PlayerName, "");
 
+            var randomPosition = GetRandomPosition();
+            // var player = GameObject.Instantiate(carPrefab, randomPosition, Quaternion.identity, playersHolder);
+            var player = PhotonNetwork.Instantiate("Car Prefab", GetRandomPosition(), Quaternion.identity, 0, new object[]{playerName, selectedColorIndex});
+            
             var cameraFollowTarget = Camera.main.GetComponent<CameraFollowTarget>();
             cameraFollowTarget.SetTarget(player.transform);
             cameraFollowTarget.enabled = true;
-            
-            var selectedColorIndex = PlayerPrefs.GetInt(Constants.SelectedColor, 0);
-            player.GetComponent<PlayerController>().SetColor(materials[selectedColorIndex]);
             
             Debug.Log($"Starting game. Spawning at position {randomPosition}");
         }
