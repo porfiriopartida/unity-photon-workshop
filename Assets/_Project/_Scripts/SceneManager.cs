@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Photon.Pun.Demo.SlotRacer;
 using UnityEngine;
 
 namespace PorfirioPartida.Workshop
@@ -10,9 +11,10 @@ namespace PorfirioPartida.Workshop
         public Transform playersHolder;
         public GameObject carPrefab;
         public Transform[] spawnPoints;
+        public Material[] materials;
         public void Start()
         {
-            StartGame();
+            // StartGame();
         }
 
         public void StartGame()
@@ -22,6 +24,12 @@ namespace PorfirioPartida.Workshop
 
             var cameraFollowTarget = Camera.main.GetComponent<CameraFollowTarget>();
             cameraFollowTarget.SetTarget(player.transform);
+            cameraFollowTarget.enabled = true;
+            
+            var selectedColorIndex = PlayerPrefs.GetInt(Constants.SelectedColor, 0);
+            player.GetComponent<PlayerController>().SetColor(materials[selectedColorIndex]);
+            
+            Debug.Log($"Starting game. Spawning at position {randomPosition}");
         }
 
         private Vector3 GetRandomPosition()

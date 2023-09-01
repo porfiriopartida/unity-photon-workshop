@@ -15,11 +15,23 @@ namespace PorfirioPartida.Workshop
         
         private Rigidbody _rigidbody;
         private float _accel;
+
+        public MeshRenderer carModel;
+        
         public void Start()
         {
             _rigidbody = GetComponent<Rigidbody>();
 
             SetPlayerName(PlayerPrefs.GetString(Constants.PlayerName));
+        }
+
+        public void SetColor(Material material)
+        {
+            //Only this has influence over the car color, the rest is windows or wheels.
+            Material[] materials = carModel.materials;
+            materials[0] = material;
+
+            carModel.GetComponent<MeshRenderer>().materials = materials;
         }
 
         private void SetPlayerName(string playerName)

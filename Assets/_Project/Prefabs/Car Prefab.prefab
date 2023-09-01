@@ -337,8 +337,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   uiPlayerName: {fileID: 865296847}
-  rotationSpeed: 20
-  accelRate: 5
+  rotationSpeed: 35
+  accelRate: 6
+  carModel: {fileID: 5597152793844942115}
 --- !u!65 &1272325737
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -417,6 +418,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 291904b48d3f54148a3a4ece28cb0c5f, type: 3}
+--- !u!23 &5597152793844942115 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: 291904b48d3f54148a3a4ece28cb0c5f, type: 3}
+  m_PrefabInstance: {fileID: 6515725071621036455}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6766157145276251724 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 291904b48d3f54148a3a4ece28cb0c5f, type: 3}

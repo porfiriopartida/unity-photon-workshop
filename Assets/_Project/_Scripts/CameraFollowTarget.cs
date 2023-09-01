@@ -14,13 +14,6 @@ namespace PorfirioPartida.Workshop
             started = true;
             _initalOffset = new Vector3(-.75f, 14.94f, -13.06f);
         }
-
-        // void Start()
-        // {
-        //     _initalOffset = transform.position - target.position;
-        //     Debug.Log($"Initial Offset: {_initalOffset}");
-        // }
-
         void FixedUpdate()
         {
             if (!started)
