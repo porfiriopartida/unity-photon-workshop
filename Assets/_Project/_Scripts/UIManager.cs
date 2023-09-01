@@ -1,12 +1,15 @@
 ﻿using System.Linq;
+using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace PorfirioPartida.Workshop
 {
-    public class UIManager : MonoBehaviour
+    public class UIManager : MonoBehaviourPunCallbacks
     {
         public TMPro.TMP_InputField playerNameField;
+        public Button connectButton;
         public Button startButton;
         public GameObject UIPanel;
 
@@ -18,6 +21,7 @@ namespace PorfirioPartida.Workshop
         #region Workshop UI Manager
         private void Start()
         {
+            connectButton.onClick.AddListener(ConnectButtonPressed);
             startButton.onClick.AddListener(StartButtonPressed);
             nextColor.onClick.AddListener(NextColorPressed);
             prevColor.onClick.AddListener(PrevColorPressed);
@@ -65,19 +69,72 @@ namespace PorfirioPartida.Workshop
             selectedColorImage.color = SceneManager.Instance.materials[selectedColor].color;
         }
 
-        private void StartButtonPressed()
+        private void ConnectButtonPressed()
         {
-            
-            UIPanel.SetActive(false);
             var cleanName = CleanName(playerNameField.text).Trim();
             PlayerPrefs.SetString(Constants.PlayerName, cleanName);
             PlayerPrefs.SetInt(Constants.SelectedColor, selectedColor);
-            Debug.Log($"Starting with name: {cleanName}");
+            Debug.Log($"Test Starting with name: {cleanName}");
+            PhotonNetwork.ConnectUsingSettings();
+        }
+
+        private void StartButtonPressed()
+        {
+            UIPanel.SetActive(false);
             SceneManager.Instance.StartGame();
         }
+
         #endregion
-    
-        //TODO: Add Photon set name and connect here.
+
+        public override void OnConnectedToMaster()
+        {
+            base.OnConnectedToMaster();
+            Debug.Log("Connected to master server.");
+            PhotonNetwork.JoinRandomRoom();
+        }
+
+        public override void OnJoinRandomFailed(short returnCode, string message)
+        {
+            base.OnJoinRandomFailed(returnCode, message);
+            Debug.Log("No Room was found, trying to create one.");
+            var roomOptions = new RoomOptions();
+            roomOptions.IsVisible = true;
+            roomOptions.MaxPlayers = maxPlayers;
+
+            PhotonNetwork.JoinOrCreateRoom(RandomString(5), roomOptions, TypedLobby.Default);
+        }
+        private static string RandomString(int length)
+        {
+            var random = new System.Random();
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+        public override void OnJoinedRoom()
+        {
+            base.OnJoinedRoom();
+            FixConnectedUI();
+        }
+
+        public override void OnPlayerEnteredRoom(Player newPlayer)
+        {
+            base.OnPlayerEnteredRoom(newPlayer);
+            FixConnectedUI();
+        }
+
+        public override void OnPlayerLeftRoom(Player otherPlayer)
+        {
+            base.OnPlayerLeftRoom(otherPlayer);
+            FixConnectedUI();
+        }
+        public TMPro.TMP_Text connectedPlayers;
+        private const int maxPlayers = 20;
+        private const string ConnectedPlayersCounter = "Players Online -- {0}/{1}";
+
+        private void FixConnectedUI()
+        {
+            connectedPlayers.text = string.Format(ConnectedPlayersCounter, PhotonNetwork.PlayerList.Length, maxPlayers);
+        }
 
         #region Clean Name
         

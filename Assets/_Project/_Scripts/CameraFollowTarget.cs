@@ -13,19 +13,8 @@ namespace PorfirioPartida.Workshop
             this.target = target;
             started = true;
             _initalOffset = new Vector3(-.75f, 14.94f, -13.06f);
-        }
-        void FixedUpdate()
-        {
-            if (!started)
-            {
-                //Can't follow because no target is set, just wait for external enablement.
-                this.enabled = false;
-                return;
-            }
-
             transform.position = target.position + _initalOffset;
+            this.transform.parent = target;
         }
-    
-        //TODO: Attach to local car for multiplayer.
     }
 }
