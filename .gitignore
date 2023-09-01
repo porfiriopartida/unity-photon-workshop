@@ -64,9 +64,18 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
-# Packed Addressables
-/[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
 
-# Temporary auto-generated Android Assets
-/[Aa]ssets/[Ss]treamingAssets/aa.meta
-/[Aa]ssets/[Ss]treamingAssets/aa/*
+#Custom
+
+[Aa]ssets/WIP/
+/[Pp]hoton/
+[Aa]ssets/[Ee]xternalResources/
+[Aa]ssets/Plugins/NSubstitute.dll
+[Cc]oncept*/
+# Asset meta data should only be ignored when the corresponding asset is also ignored
+!/[Aa]ssets/**/*.meta
+
+.idea
+Releases/
+Releases.zip
+ProjectSettings/AndroidLogcatSettings.asset
