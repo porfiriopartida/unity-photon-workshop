@@ -4,7 +4,7 @@ using UnityEngine;
 namespace PorfirioPartida.Workshop
 {
     [RequireComponent(typeof(Rigidbody))]
-    public class PlayerController : MonoBehaviour
+    public class PlayerController : MonoBehaviour //IPunInstantiateMagicCallback
     {
         public Transform groundCheck;
         public LayerMask groundLayer;
@@ -22,10 +22,15 @@ namespace PorfirioPartida.Workshop
         {
             _rigidbody = GetComponent<Rigidbody>();
 
+            //Online move to event.
             SetPlayerName(PlayerPrefs.GetString(Constants.PlayerName));
+            SetPlayerColor(PlayerPrefs.GetInt(Constants.SelectedColor, 0));
         }
-
-        public void SetColor(Material material)
+        private void SetPlayerName(string playerName)
+        {
+            uiPlayerName.text = playerName;
+        }
+        private void SetColor(Material material)
         {
             //Only this has influence over the car color, the rest is windows or wheels.
             Material[] materials = carModel.materials;
@@ -33,10 +38,9 @@ namespace PorfirioPartida.Workshop
 
             carModel.GetComponent<MeshRenderer>().materials = materials;
         }
-
-        private void SetPlayerName(string playerName)
+        private void SetPlayerColor(int materialIdx)
         {
-            uiPlayerName.text = playerName;
+            SetColor(SceneManager.Instance.materials[materialIdx]);
         }
 
         private void Update()
@@ -92,5 +96,16 @@ namespace PorfirioPartida.Workshop
         {
             _rigidbody.useGravity = true;
         }
+        // public void OnPhotonInstantiate(PhotonMessageInfo info)
+        // {
+        //     var instantiationData = info.photonView.InstantiationData;
+        //     var player = info.photonView.GetComponent<PlayerController>();
+        //     var playerName = (string)instantiationData[0];
+        //     var selectedColorIndex = (int)instantiationData[1];
+        //     var playerController = player.GetComponent<PlayerController>(); 
+        //     playerController.SetColor(SceneManager.Instance.materials[selectedColorIndex]);
+        //     playerController.SetPlayerName(playerName);
+        //     Debug.Log(instantiationData);
+        // }
     }
 }

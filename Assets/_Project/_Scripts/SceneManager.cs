@@ -12,22 +12,20 @@ namespace PorfirioPartida.Workshop
         public GameObject carPrefab;
         public Transform[] spawnPoints;
         public Material[] materials;
-        public void Start()
-        {
-            // StartGame();
-        }
 
         public void StartGame()
         {
+            // var playerName = PlayerPrefs.GetString(Constants.PlayerName);
+            // var selectedColorIndex = PlayerPrefs.GetInt(Constants.SelectedColor);
             var randomPosition = GetRandomPosition();
             var player = GameObject.Instantiate(carPrefab, randomPosition, Quaternion.identity, playersHolder);
+            
+            // var player = PhotonNetwork.Instantiate("Car Prefab", GetRandomPosition(), Quaternion.identity, 0});
+            // var player = PhotonNetwork.Instantiate("Car Prefab", GetRandomPosition(), Quaternion.identity, 0, new object[]{playerName, selectedColorIndex});
 
             var cameraFollowTarget = Camera.main.GetComponent<CameraFollowTarget>();
             cameraFollowTarget.SetTarget(player.transform);
             cameraFollowTarget.enabled = true;
-            
-            var selectedColorIndex = PlayerPrefs.GetInt(Constants.SelectedColor, 0);
-            player.GetComponent<PlayerController>().SetColor(materials[selectedColorIndex]);
             
             Debug.Log($"Starting game. Spawning at position {randomPosition}");
         }
